@@ -11,5 +11,6 @@ abstract class Alarm with _$Alarm {
     required String createdBy,
     required String description,
     required int numberOfPeople,
+    required String frequency,
   }) = _Alarm;
 }

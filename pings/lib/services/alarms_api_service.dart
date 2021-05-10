@@ -26,12 +26,14 @@ class FakeAlarmsApi extends AlarmsApi {
           description: 'Football',
           datetime: DateTime(random.nextInt(10) * 2000),
           numberOfPeople: 3,
+          frequency: 'Daily',
         ),
         Alarm(
           createdBy: 'You',
           description: 'Cricket',
           datetime: DateTime(random.nextInt(10) * 2000),
           numberOfPeople: 11,
+          frequency: 'Daily',
         ),
       ];
     });
