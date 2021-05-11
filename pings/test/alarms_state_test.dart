@@ -79,7 +79,7 @@ void main() {
 
       await container.read(alarmsNotifierProvider.notifier).getAlarmsFromApi();
       expect(container.read(alarmsNotifierProvider.notifier).debugState,
-          const AlarmsState.error('test'));
+          const AlarmsState.error('Could not fetch alarms.'));
     });
   });
 }
