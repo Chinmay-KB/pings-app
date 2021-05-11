@@ -15,11 +15,6 @@ class FakeAlarmsApi extends AlarmsApi {
   Future<List<Alarm>> fetchAlarms() {
     return Future.delayed(const Duration(seconds: 1), () {
       final random = Random();
-
-      if (random.nextBool()) {
-        throw const SocketException('Could not connect to the internet');
-      }
-
       return [
         Alarm(
           createdBy: 'You',

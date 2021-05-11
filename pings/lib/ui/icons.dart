@@ -2,8 +2,6 @@ import 'package:flutter/widgets.dart';
 
 /// Custom icons for the app.
 class PingsIcons {
-  PingsIcons._();
-
   static const String _fontFamily = 'pings';
 
   /// Icon: groups
