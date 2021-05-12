@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pings/ui/add_alarm_view.dart';
 import 'package:pings/ui/home_view.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class PingsApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeView(),
+      home: const AddAlarmView(),
     );
   }
 }
