@@ -10,7 +10,7 @@ name: Test and Coveralls
 
 jobs:
   build:
-    name: 
+    name: Run tests and upload to coveralls
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -43,6 +43,7 @@ jobs:
       run: flutter test --coverage
 
     - name: Very good coverage - exclude generated files from coverage info
+      uses: VeryGoodOpenSource/very_good_coverage@v1.1.1
       with:
         path: ./pings/coverage/lcov.info
         min_coverage: 80
