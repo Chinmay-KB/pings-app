@@ -1,30 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pings/notifiers/time_picker_notifier.dart';
 
 /// View to add alarm. Shows the time picker and options for other screens and
 /// date picker.
-class AddAlarmView extends StatefulWidget {
+class AddAlarmView extends StatelessWidget {
   /// Constructor for AddAlarmView.
   const AddAlarmView({Key? key}) : super(key: key);
-
-  @override
-  _AddAlarmViewState createState() => _AddAlarmViewState();
-}
-
-class _AddAlarmViewState extends State<AddAlarmView> {
-  int _hourvalue = now.hour;
-  int _minutevalue = (5 * (now.minute / 5).ceil());
-  static DateTime now = DateTime.now();
-  DateTime selectedDateTime = DateTime.now();
-  final TextStyle selectedTimeStyle = GoogleFonts.cabin(
-      color: const Color(0xFF4F4F4F), fontSize: 36.0, height: 1.2);
-  final TextStyle unselectedTimeStyle = GoogleFonts.cabin(
-      color: const Color(0xFF4F4F4F).withOpacity(0.5),
-      letterSpacing: -1,
-      fontSize: 36.0,
-      height: 1.2);
 
   @override
   Widget build(BuildContext context) {
@@ -48,68 +33,69 @@ class _AddAlarmViewState extends State<AddAlarmView> {
               onPressed: () {})
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 45.0),
-            child: Text(
-              'Alarm in ${now.difference(selectedDateTime).inHours.abs()} hours and ${now.difference(selectedDateTime).inMinutes.abs() - now.difference(selectedDateTime).inHours.abs() * 60} minutes',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.cabin(height: 1.2, fontSize: 14.0),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ShadedPicker(
-                picker: NumberPicker(
-                  zeroPad: true,
-                  itemCount: 5,
-                  minValue: 0,
-                  maxValue: 23,
-                  itemHeight: 44,
-                  infiniteLoop: true,
-                  value: _hourvalue,
-                  selectedTextStyle: selectedTimeStyle,
-                  textStyle: unselectedTimeStyle,
-                  onChanged: (int value) {
-                    setState(() {
-                      now = DateTime.now();
-                      selectedDateTime = DateTime(
-                          now.year, now.month, now.day, value, now.minute);
-                      _hourvalue = value;
-                    });
-                  },
-                ),
-              ),
-              ShadedPicker(
-                picker: NumberPicker(
-                  zeroPad: true,
-                  itemCount: 5,
-                  minValue: 0,
-                  maxValue: 55,
-                  itemHeight: 44,
-                  infiniteLoop: true,
-                  step: 5,
-                  selectedTextStyle: selectedTimeStyle,
-                  textStyle: unselectedTimeStyle,
-                  value: _minutevalue,
-                  onChanged: (int value) {
-                    setState(() {
-                      now = DateTime.now();
-                      selectedDateTime = DateTime(
-                          now.year, now.month, now.day, _hourvalue, value);
-                      _minutevalue = value;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
+      body: ListView(
+        children: [const PingsTimePicker()],
       ),
+    );
+  }
+}
+
+/// Time picker for add alarm view.
+class PingsTimePicker extends ConsumerWidget {
+  /// Constructor PingsTimePicker.
+  const PingsTimePicker({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, ScopedReader watch) {
+    final _now = DateTime.now();
+    final _selectedDateTime = watch(timePickerNotifier);
+    final _difference = _selectedDateTime.difference(_now);
+    final _diffHour = _difference.inHours;
+    final _diffMin = _difference.inMinutes.abs() - _diffHour * 60;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0, bottom: 45.0),
+          child: Text(
+            'Alarm in $_diffHour hours and $_diffMin minutes',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.cabin(height: 1.2, fontSize: 14.0),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ShadedPicker(
+              minValue: 0,
+              maxValue: 23,
+              step: 1,
+              value: _selectedDateTime.hour,
+              onChanged: (int value) {
+                context
+                    .read(
+                      timePickerNotifier.notifier,
+                    )
+                    .updateTimePickerState(value, _selectedDateTime.minute);
+              },
+            ),
+            ShadedPicker(
+              minValue: 0,
+              maxValue: 55,
+              step: 5,
+              value: 5 * (_selectedDateTime.minute / 5).ceil(),
+              onChanged: (int value) {
+                context
+                    .read(
+                      timePickerNotifier.notifier,
+                    )
+                    .updateTimePickerState(_selectedDateTime.hour, value);
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -117,10 +103,37 @@ class _AddAlarmViewState extends State<AddAlarmView> {
 /// Number picker with shaded edges.
 class ShadedPicker extends StatelessWidget {
   /// Constructor for ShadedPicker.
-  const ShadedPicker({Key? key, required this.picker}) : super(key: key);
+  ShadedPicker({
+    Key? key,
+    required this.onChanged,
+    required this.minValue,
+    required this.maxValue,
+    required this.value,
+    required this.step,
+  }) : super(key: key);
 
-  /// The child number picker.
-  final NumberPicker picker;
+  /// Function callback to execute when value in picker changes
+  final Function(int) onChanged;
+
+  /// Minimum value of the picker.
+  final int minValue;
+
+  /// Maximum value of the picker.
+  final int maxValue;
+
+  /// Value currently shown in the picker.
+  final int value;
+
+  /// Difference between the values show in the picker.
+  final int step;
+
+  final TextStyle _selectedTimeStyle = GoogleFonts.cabin(
+      color: const Color(0xFF4F4F4F), fontSize: 36.0, height: 1.2);
+  final TextStyle _unselectedTimeStyle = GoogleFonts.cabin(
+      color: const Color(0xFF4F4F4F).withOpacity(0.5),
+      letterSpacing: -1,
+      fontSize: 36.0,
+      height: 1.2);
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +152,19 @@ class ShadedPicker extends StatelessWidget {
         ).createShader(rect);
       },
       blendMode: BlendMode.dstOut,
-      child: picker,
+      child: NumberPicker(
+        zeroPad: true,
+        itemCount: 5,
+        minValue: minValue,
+        maxValue: maxValue,
+        itemHeight: 44,
+        step: step,
+        infiniteLoop: true,
+        value: value,
+        selectedTextStyle: _selectedTimeStyle,
+        textStyle: _unselectedTimeStyle,
+        onChanged: onChanged,
+      ),
     );
   }
 }
