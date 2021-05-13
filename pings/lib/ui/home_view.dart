@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pings/core/navigation_service.dart';
+import 'package:pings/core/router.dart';
 import 'package:pings/models/alarm.dart';
 import 'package:pings/providers/providers.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,7 +40,13 @@ class HomeView extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.black,
-          onPressed: () {},
+          onPressed: () {
+            context
+                .read(navigatorProvider)
+                .navigatorKey
+                .currentState
+                ?.pushNamed(PingsRouter.addAlarmViewRoute);
+          },
           child: const Icon(Icons.add),
         ),
         body: Consumer(
