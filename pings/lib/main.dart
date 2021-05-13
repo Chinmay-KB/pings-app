@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pings/ui/add_alarm_view.dart';
+import 'package:pings/core/navigation_service.dart';
+import 'package:pings/core/router.dart';
 import 'package:pings/ui/home_view.dart';
 
 void main() {
@@ -19,7 +20,9 @@ class PingsApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const AddAlarmView(),
+      home: const HomeView(),
+      navigatorKey: context.read(navigatorProvider).navigatorKey,
+      onGenerateRoute: PingsRouter.generateRoute,
     );
   }
 }
