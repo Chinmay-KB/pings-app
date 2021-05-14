@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:pings/core/navigation_service.dart';
-import 'package:pings/core/router.dart';
 import 'package:pings/models/alarm.dart';
 import 'package:pings/notifiers/alarm_notifier.dart';
 import 'package:pings/providers/providers.dart';
 import 'package:pings/services/alarms_api_service.dart';
 import 'package:pings/ui/add_alarm_view.dart';
 import 'package:pings/ui/home_view.dart';
+
+import 'helpers/test_app.dart';
 
 class TestAlarmsApi implements AlarmsApi {
   TestAlarmsApi({this.emptyList = false});
@@ -89,25 +89,21 @@ void main() {
     testWidgets(
       'Tapping floating action button navigates to add alarm view',
       (WidgetTester tester) async {
-        final routes = <String, WidgetBuilder>{
-          '/': (context) => const HomeView(),
-          PingsRouter.addAlarmViewRoute: (context) => const AddAlarmView(),
-        };
-        await (tester.pumpWidget(
-          ProviderScope(
-            child: MaterialApp(
-              navigatorKey: NavigationService().navigatorKey,
-              routes: routes,
-            ),
-          ),
-        ));
+        await (tester.pumpWidget(const ProviderScope(child: TestApp())));
         await tester.pump(const Duration(seconds: 1));
+
         expect(find.byType(HomeView), findsOneWidget);
         expect(find.byType(AddAlarmView, skipOffstage: false), findsNothing);
 
-        await tester.tap(find.byType(FloatingActionButton));
+        final button = find.byType(FloatingActionButton);
+
+        await tester.tap(button);
         await tester.pump();
-        expect(find.byType(HomeView), findsOneWidget);
+        await tester.pumpAndSettle();
+
+        expect(find.byType(HomeView), findsNothing);
+        expect(find.byType(AddAlarmView), findsOneWidget);
+        expect(find.byIcon(Icons.close), findsOneWidget);
       },
     );
   });
