@@ -30,14 +30,14 @@ jobs:
       working-directory: ./pings
       run: flutter pub get
 
+    - name: Generate required files
+      working-directory: ./pings
+      run: flutter pub run build_runner build --delete-conflicting-outputs
+
     - name: Analyze Project
       working-directory: ./pings
       run: flutter analyze
       continue-on-error: true
-
-    - name: Generate required files
-      working-directory: ./pings
-      run: flutter pub run build_runner build --delete-conflicting-outputs
 
     - name: Run tests and generate lcov.info
       working-directory: ./pings
@@ -54,5 +54,4 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        base-path: ./pings
-
+        path-to-lcov: ./pings/coverage/lcov.info

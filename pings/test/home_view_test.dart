@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:pings/core/navigation_service.dart';
 import 'package:pings/core/router.dart';
 import 'package:pings/models/alarm.dart';
@@ -13,7 +12,6 @@ import 'package:pings/providers/providers.dart';
 import 'package:pings/services/alarms_api_service.dart';
 import 'package:pings/ui/add_alarm_view.dart';
 import 'package:pings/ui/home_view.dart';
-import 'home_view_test.mocks.dart';
 
 class TestAlarmsApi implements AlarmsApi {
   TestAlarmsApi({this.emptyList = false});
@@ -31,12 +29,6 @@ class TestAlarmsApi implements AlarmsApi {
 @GenerateMocks([NavigatorObserver])
 void main() {
   group('HomeViewTest - ', () {
-    late NavigatorObserver mockObserver;
-
-    setUp(() {
-      mockObserver = MockNavigatorObserver();
-    });
-
     testWidgets(
       'Appbar, Fab, IconButton test',
       (WidgetTester tester) async {
