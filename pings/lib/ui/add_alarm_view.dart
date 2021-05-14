@@ -27,11 +27,7 @@ class AddAlarmView extends StatelessWidget {
               Icons.close,
               color: Colors.black,
             ),
-            onPressed: () => context
-                .read(navigatorProvider)
-                .navigatorKey
-                .currentState
-                ?.pop()),
+            onPressed: () => context.read(navigatorProvider).goBack()),
         actions: [
           IconButton(
               icon: const Icon(Icons.check, color: Colors.black),
@@ -73,6 +69,7 @@ class PingsTimePicker extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ShadedPicker(
+              key: const Key('hourPicker'),
               minValue: 0,
               maxValue: 23,
               step: 1,
@@ -86,6 +83,7 @@ class PingsTimePicker extends ConsumerWidget {
               },
             ),
             ShadedPicker(
+              key: const Key('minutePicker'),
               minValue: 0,
               maxValue: 55,
               step: 5,
