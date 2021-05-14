@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provides the state for time picker.
-final timePickerNotifier = StateNotifierProvider<TimePickerNotifier, DateTime>(
+final timePickerNotifier =
+    StateNotifierProvider.autoDispose<TimePickerNotifier, DateTime>(
   (ref) => TimePickerNotifier(),
 );
 

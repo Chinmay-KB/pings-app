@@ -85,9 +85,9 @@ class PingsTimePicker extends ConsumerWidget {
             ShadedPicker(
               key: const Key('minutePicker'),
               minValue: 0,
-              maxValue: 55,
+              maxValue: 59,
               step: 5,
-              value: 5 * (_selectedDateTime.minute / 5).ceil(),
+              value: 5 * (_selectedDateTime.minute / 5).floor(),
               onChanged: (int value) {
                 context
                     .read(
