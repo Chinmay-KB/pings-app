@@ -5,7 +5,6 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pings/core/navigation_service.dart';
 import 'package:pings/notifiers/time_picker_notifier.dart';
-import 'package:pings/main.dart';
 
 /// View to add alarm. Shows the time picker and options for other screens and
 /// date picker.
