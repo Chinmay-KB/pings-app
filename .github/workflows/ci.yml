@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: code
 
     - name: Setup Java
       uses: actions/setup-java@v2
@@ -21,38 +23,60 @@ jobs:
         distribution: 'adopt'
         java-version: '8'
 
+    - name: Clone lcov
+      uses: actions/checkout@v2
+      with:
+        repository: linux-test-project/lcov
+        path: lcov
+
+    - name: Install lcov
+      working-directory: lcov
+      run: make install
+
+    - name: Cache Flutter
+      id: flutter-cache
+      uses: actions/cache@v2
+      with:
+        path: /opt/hostedtoolcache/flutter
+        key: ${{ env.cache-name }}-ubuntu-latest-pings-${{ hashFiles('code/pings/pubspec.lock') }}
+        restore-keys: |
+          ${{ env.cache-name }}-ubuntu-latest-pings-
+          ${{ env.cache-name }}-ubuntu-latest-
+          ${{ env.cache-name }}-
+      env:
+        cache-name: flutter-cache
+
     - name: Setup Flutter
+      if: steps.flutter-cache.outputs.cache-hit != 'true'
       uses: subosito/flutter-action@v1
       with:
         flutter-version: '2.0.x'
+        channel: 'stable'
 
     - name: Get packages
-      working-directory: ./pings
+      working-directory: code/pings
       run: flutter pub get
 
     - name: Generate required files
-      working-directory: ./pings
+      working-directory: code/pings
       run: flutter pub run build_runner build --delete-conflicting-outputs
 
     - name: Analyze Project
-      working-directory: ./pings
+      working-directory: code/pings
       run: flutter analyze
       continue-on-error: true
 
     - name: Run tests and generate lcov.info
-      working-directory: ./pings
+      working-directory: code/pings
       run: flutter test --coverage
 
-    - name: Very good coverage - exclude generated files from coverage info
-      uses: VeryGoodOpenSource/very_good_coverage@v1.1.1
-      with:
-        path: ./pings/coverage/lcov.info
-        min_coverage: 80
-        exclude: "**/*.freezed.dart"
+    - name: Remove files from lcov.info
+      working-directory: code/pings
+      run: ./lcovrmf
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: ./pings/coverage/lcov.info
-        base-path: ./pings
+        path-to-lcov: code/pings/coverage/lcov.info
+        base-path: code/pings
