@@ -7,7 +7,6 @@ on:
       - main
 
 name: Test and Coveralls
-
 jobs:
   build:
     name: Run tests and upload to coveralls
@@ -22,16 +21,6 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: '8'
-
-    - name: Clone lcov
-      uses: actions/checkout@v2
-      with:
-        repository: linux-test-project/lcov
-        path: lcov
-
-    - name: Install lcov
-      working-directory: lcov
-      run: make install
 
     - name: Cache Flutter
       id: flutter-cache
@@ -72,7 +61,9 @@ jobs:
 
     - name: Remove files from lcov.info
       working-directory: code/pings
-      run: ./lcovrmf
+      run: |
+        flutter pub global activate remove_from_coverage
+        flutter pub global run remove_from_coverage -f coverage/lcov.info -r '\.freezed\.dart'
 
     - name: Coveralls
       uses: coverallsapp/github-action@master

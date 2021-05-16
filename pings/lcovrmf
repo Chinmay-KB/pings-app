@@ -1,4 +1,0 @@
-#!/bin/bash
-
-excludeList="lib/**/*.freezed.dart lib/core/*"
-echo $excludeList | xargs lcov --remove coverage/lcov.info -o coverage/lcov.info
