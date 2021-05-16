@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:pings/notifiers/time_picker_notifier.dart';
 import 'package:pings/ui/add_alarm_view.dart';
 import 'package:pings/ui/home_view.dart';
 
