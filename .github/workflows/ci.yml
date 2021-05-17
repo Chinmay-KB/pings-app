@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        path: code
 
     - name: Setup Java
       uses: actions/setup-java@v2
@@ -27,7 +25,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: /opt/hostedtoolcache/flutter
-        key: ${{ env.cache-name }}-ubuntu-latest-pings-${{ hashFiles('code/pings/pubspec.lock') }}
+        key: ${{ env.cache-name }}-ubuntu-latest-pings-${{ hashFiles('./pings/pubspec.lock') }}
         restore-keys: |
           ${{ env.cache-name }}-ubuntu-latest-pings-
           ${{ env.cache-name }}-ubuntu-latest-
@@ -43,24 +41,24 @@ jobs:
         channel: 'stable'
 
     - name: Get packages
-      working-directory: code/pings
+      working-directory: ./pings
       run: flutter pub get
 
     - name: Generate required files
-      working-directory: code/pings
+      working-directory: ./pings
       run: flutter pub run build_runner build --delete-conflicting-outputs
 
     - name: Analyze Project
-      working-directory: code/pings
+      working-directory: ./pings
       run: flutter analyze
       continue-on-error: true
 
     - name: Run tests and generate lcov.info
-      working-directory: code/pings
+      working-directory: ./pings
       run: flutter test --coverage
 
     - name: Remove files from lcov.info
-      working-directory: code/pings
+      working-directory: ./pings
       run: |
         flutter pub global activate remove_from_coverage
         flutter pub global run remove_from_coverage -f coverage/lcov.info -r '\.freezed\.dart'
@@ -69,5 +67,5 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: code/pings/coverage/lcov.info
-        base-path: code/pings
+        path-to-lcov: ./pings/coverage/lcov.info
+        base-path: ./pings
