@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "784137900084",
+    "project_id": "pings-cefec",
+    "storage_bucket": "pings-cefec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784137900084:android:2f148491edb11b3b313a61",
+        "android_client_info": {
+          "package_name": "com.app.pings"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "784137900084-ea9anua7h9o73vfp5s2sqffc147sf2fl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0H52U_5LLynWd1tafSkK4sQAzdWV2mo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "784137900084-ea9anua7h9o73vfp5s2sqffc147sf2fl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
